@@ -1,0 +1,22 @@
+---
+title: "p8105_hw2_rz2570"
+author: "Ruilian Zhang"
+date: "10/2/2021"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+# Problem 1
+
+```{r}
+# read the excel, clean column names, remove columns with notes and omit rows that do not include dumpster-specific data
+trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 1) %>% 
+  janitor::clean_names() %>% 
+  select(-starts_with("x")) %>% 
+  drop_na(dumpster)
+```
+
