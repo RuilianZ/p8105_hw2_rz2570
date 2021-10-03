@@ -36,5 +36,10 @@ precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
   rename(total_precipitation = total) %>% 
   mutate(year = 2019) %>% 
   relocate(year)
+
+# combine precipitation datasets and convert month to a character variable
+precipitation = bind_rows(precipitation_2018, precipitation_2019) %>% 
+  mutate(month = month.name[month])
 ```
+
 
