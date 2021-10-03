@@ -38,8 +38,12 @@ precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
   relocate(year)
 
 # combine precipitation datasets and convert month to a character variable
-precipitation = bind_rows(precipitation_2018, precipitation_2019) %>% 
+precipitation_df = bind_rows(precipitation_2018, precipitation_2019) %>% 
   mutate(month = month.name[month])
 ```
 
+In trash_wheel_df, there are `r nrow(trash_wheel_df)` observations. In precipitation_df, there are `r nrow(precipitation_df)` observations.  
+For example, in trash_wheel_df, the rounded number of sports balls in dumpster 1 is 7 and the number of cigarette butts is 126000 in May 2014. In precipitation_df, the total precipitation in June 2018 is 4.77 inch, and in June 2019 is 0.42 inch.  
+For available data, the total precipitation in 2018 is `r sum(precipitation_2018$total_precipitation)`.  
+The median number of sports balls in a dumpster in 2019 is `r median(trash_wheel_df$sports_balls)`.
 
