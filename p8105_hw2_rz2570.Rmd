@@ -13,10 +13,28 @@ library(readxl)
 # Problem 1
 
 ```{r}
-# read the excel, clean column names, remove columns with notes and omit rows that do not include dumpster-specific data
-trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 1) %>% 
+# read and clean Mr. Trash Wheel data
+trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "Mr. Trash Wheel") %>% 
   janitor::clean_names() %>% 
   select(-starts_with("x")) %>% 
-  drop_na(dumpster)
+  drop_na(dumpster) %>% 
+  mutate(sports_balls = round(sports_balls))
+```
+
+```{r}
+# read and clean precipitation data for 2018 and 2019
+precipitation_2018 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "2018 Precipitation", range = "A2:B14") %>% 
+  janitor::clean_names() %>%
+  drop_na() %>% 
+  rename(total_precipitation = total) %>% 
+  mutate(year = 2018) %>% 
+  relocate(year)
+
+precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "2019 Precipitation", range = "A2:B14") %>% 
+  janitor::clean_names() %>%
+  drop_na() %>% 
+  rename(total_precipitation = total) %>% 
+  mutate(year = 2019) %>% 
+  relocate(year)
 ```
 
