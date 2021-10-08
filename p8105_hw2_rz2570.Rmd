@@ -10,6 +10,8 @@ library(tidyverse)
 library(readxl)
 ```
 
+
+
 # Problem 1
 
 ```{r}
@@ -46,4 +48,18 @@ In trash_wheel_df, there are `r nrow(trash_wheel_df)` observations. In precipita
 For example, in trash_wheel_df, the rounded number of sports balls in dumpster 1 is 7 and the number of cigarette butts is 126000 in May 2014. In precipitation_df, the total precipitation in June 2018 is 4.77 inch, and in June 2019 is 0.42 inch.  
 For available data, the total precipitation in 2018 is `r sum(precipitation_2018$total_precipitation)`.  
 The median number of sports balls in a dumpster in 2019 is `r median(trash_wheel_df$sports_balls)`.
+
+
+
+# Problem 2
+
+```{r}
+# clean the data in pols-month.csv
+pols_month_df = read_csv("data/fivethirtyeight_datasets/pols-month.csv") %>%
+  separate(col = mon, into = c("year", "month", "day"), sep = "-") %>% 
+  mutate(month = month.name[as.numeric(month)]) %>% 
+  mutate(president = ifelse(prez_gop == "1", "gop", "dem")) %>% 
+  select(-c(prez_dem, prez_gop)) %>% 
+  select(-day)
+```
 
