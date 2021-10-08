@@ -44,10 +44,9 @@ precipitation_df = bind_rows(precipitation_2018, precipitation_2019) %>%
   mutate(month = month.name[month])
 ```
 
-In trash_wheel_df, there are `r nrow(trash_wheel_df)` observations. In precipitation_df, there are `r nrow(precipitation_df)` observations.  
-For example, in trash_wheel_df, the rounded number of sports balls in dumpster 1 is 7 and the number of cigarette butts is 126000 in May 2014. In precipitation_df, the total precipitation in June 2018 is 4.77 inch, and in June 2019 is 0.42 inch.  
-For available data, the total precipitation in 2018 is `r sum(precipitation_2018$total_precipitation)`.  
-The median number of sports balls in a dumpster in 2019 is `r median(trash_wheel_df$sports_balls)`.
+* In trash_wheel_df, there are `r nrow(trash_wheel_df)` observations. In precipitation_df, there are `r nrow(precipitation_df)` observations. 
+* For example, in trash_wheel_df, the rounded number of sports balls in dumpster 1 is 7 and the number of cigarette butts is 126000 in May 2014. In precipitation_df, the total precipitation in June 2018 is 4.77 inch, and in June 2019 is 0.42 inch.
+* For available data, the total precipitation in 2018 is `r sum(precipitation_2018$total_precipitation)`. The median number of sports balls in a dumpster in 2019 is `r median(trash_wheel_df$sports_balls)`.
 
 
 
@@ -93,16 +92,46 @@ unemployment_df = read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>%
 # join the datasets by merging snp into pols
 pols_merge = left_join(pols_df, snp_df)
 
-# merge unemployment into the result
+# merge unemployment into the result and rename the variables
 pols_merge = mutate(pols_merge, month = str_to_lower(month)) %>% 
   mutate(month = substr(month, 1, 3))
 
-pols_result = left_join(pols_merge, unemployment_df)
+pols_result = left_join(pols_merge, unemployment_df) %>% 
+  rename(
+    president_party = president,
+    close_stock_index = close,
+    unemployment_percentage = percentage
+  )
 ```
 
-```{r}
+```{r, eval = FALSE}
 # have a look at the resulting dataset
 skimr::skim(pols_result)
 ```
 
-The resulting dataset has 822 rows and 11 columns. The range of year lists from 1947 to 2015. 
+* Dataset **pols_df** contains 822 observations of 9 variables related to the number of national politicians who are democratic or republican at any given time. The **snp_df** contains 787 observations of 3 variables, which are the date of observation and the closing values of the S&P stock index on the associated date. The **unemployment_df** contains 816 observations of 3 variables, which are the date of observation and the percentage of unemployment on the associated date. 
+* The resulting **dataset pol_result** has 822 rows and 11 columns, containing all the variables from above datasets. The range of year lists from 1947 to 2015. Some key variables are  *president_party* (whether the president was democratic or republican), *close_stock_index* (the closing values of the S&P stock index) and *unemployment_percentage* (the percentage of unemployment).
+
+
+
+# Problem 3
+
+```{r}
+# import and clean Popular_Baby_Names.csv
+names_df = read_csv("data/Popular_Baby_Names.csv", col_types = "dffcdd") %>% 
+  janitor::clean_names()
+
+# look at the variable of naming inconsistency and recode
+levels(names_df$ethnicity)
+
+names_df = mutate(
+  names_df,
+  ethnicity = recode(ethnicity,
+                     "ASIAN AND PACI" = "ASIAN AND PACIFIC ISLANDER",
+                     "BLACK NON HISP" = "BLACK NON HISPANIC",
+                     "WHITE NON HISP" = "WHITE NON HISPANIC"))
+
+# remove duplicated rows
+names_df = distinct(names_df)
+```
+
