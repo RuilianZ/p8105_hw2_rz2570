@@ -100,3 +100,9 @@ pols_merge = mutate(pols_merge, month = str_to_lower(month)) %>%
 pols_result = left_join(pols_merge, unemployment_df)
 ```
 
+```{r}
+# have a look at the resulting dataset
+skimr::skim(pols_result)
+```
+
+The resulting dataset has 822 rows and 11 columns. The range of year lists from 1947 to 2015. 
