@@ -16,7 +16,7 @@ library(readxl)
 
 ```{r}
 # read and clean Mr. Trash Wheel data
-trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "Mr. Trash Wheel") %>% 
+trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet = "Mr. Trash Wheel") %>% 
   janitor::clean_names() %>% 
   select(-starts_with("x")) %>% 
   drop_na(dumpster) %>% 
@@ -25,14 +25,14 @@ trash_wheel_df = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sh
 
 ```{r}
 # read and clean precipitation data for 2018 and 2019
-precipitation_2018 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "2018 Precipitation", range = "A2:B14") %>% 
+precipitation_2018 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet = "2018 Precipitation", range = "A2:B14") %>% 
   janitor::clean_names() %>%
   drop_na() %>% 
   rename(total_precipitation = total) %>% 
   mutate(year = 2018) %>% 
   relocate(year)
 
-precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = "2019 Precipitation", range = "A2:B14") %>% 
+precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet = "2019 Precipitation", range = "A2:B14") %>% 
   janitor::clean_names() %>%
   drop_na() %>% 
   rename(total_precipitation = total) %>% 
@@ -119,7 +119,8 @@ skimr::skim(pols_result)
 ```{r}
 # import and clean Popular_Baby_Names.csv
 names_df = read_csv("data/Popular_Baby_Names.csv", col_types = "dffcdd") %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  mutate(childs_first_name = str_to_upper(childs_first_name))
 
 # look at the variable of naming inconsistency and recode
 levels(names_df$ethnicity)
@@ -133,5 +134,28 @@ names_df = mutate(
 
 # remove duplicated rows
 names_df = distinct(names_df)
+```
+
+```{r}
+# produce a table showing the rank in popularity of the name “Olivia” as a female baby over time
+
+olivia_df = filter(
+  names_df,
+  gender == "FEMALE",
+  childs_first_name == "OLIVIA"
+  ) %>% 
+  select(-c(childs_first_name, gender, count))
+  
+olivia_table = pivot_wider(
+  olivia_df,
+  names_from = "year_of_birth",
+  values_from = "rank"
+)
+```
+
+```{r}
+# produce a similar table showing the most popular name among male children over time
+male_name_df = filter(names_df, gender == "MALE", rank == "1")
+fmale_name_df = filter(names_df, gender == "FEMALE", rank == "1")
 ```
 
